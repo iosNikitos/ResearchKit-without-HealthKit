@@ -293,12 +293,13 @@ static NSString *const _ChildNavigationControllerRestorationKey = @"childNavigat
     if ([pageViewController respondsToSelector:@selector(edgesForExtendedLayout)]) {
         pageViewController.edgesForExtendedLayout = UIRectEdgeNone;
     }
+    
     pageViewController.restorationIdentifier = _PageViewControllerRestorationKey;
     pageViewController.restorationClass = self;
-    
-    
+    pageViewController.view.clipsToBounds = NO;
     // Disable swipe to scroll
     for (UIScrollView *view in pageViewController.view.subviews) {
+        view.clipsToBounds = NO;
         if ([view isKindOfClass:[UIScrollView class]]) {
             view.scrollEnabled = NO;
         }
@@ -716,10 +717,13 @@ static NSString *const _ChildNavigationControllerRestorationKey = @"childNavigat
         UIView *childView = _childNavigationController.view;
         childView.frame = view.bounds;
         childView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        childView.clipsToBounds = NO;
+        view.clipsToBounds = NO;
         [view addSubview:childView];
     }
     
     self.view = view;
+    self.view.clipsToBounds = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -1433,7 +1437,7 @@ static NSString *const _ChildNavigationControllerRestorationKey = @"childNavigat
         [self setManagedResult:[stepViewController result] forKey:stepViewController.step.identifier];
     }
     
-    // Alert the delegate that the step is finished 
+    // Alert the delegate that the step is finished
     ORKStrongTypeOf(self.delegate) strongDelegate = self.delegate;
     if ([strongDelegate respondsToSelector:@selector(taskViewController:stepViewControllerWillDisappear:navigationDirection:)]) {
         [strongDelegate taskViewController:self stepViewControllerWillDisappear:stepViewController navigationDirection:direction];
@@ -1680,3 +1684,4 @@ static NSString *const _ORKPresentedDate = @"presentedDate";
 }
 
 @end
+
